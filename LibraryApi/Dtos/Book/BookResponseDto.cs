@@ -7,5 +7,6 @@ public class BookResponseDto
     public string Author { get; set; } = default!;
     public string ISBN { get; set; } = default!;
     public int LibraryId { get; set; }
+    public string LibraryName { get; set; } = default!;
 }
 

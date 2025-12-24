@@ -1,4 +1,5 @@
 ﻿using LibraryAPI.Dtos.Reports;
+using LibraryAPI.Dtos.Book;
 using LibraryAPI.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,27 +17,27 @@ namespace KutuphaneApi.Controllers
             _context = context;
         }
 
-        // GET api/reports/student-books/1
+        
         [HttpGet("student-books/{studentId}")]
-        public async Task<ActionResult<IEnumerable<StudentBorrowReportDto>>> GetBooksByStudent(int studentId)
+        public async Task<ActionResult<IEnumerable<BookResponseDto>>> GetBooksByStudent(int studentId)
         {
             var result = await _context.StudentBooks
                 .Include(x => x.Book)
-                .Include(x => x.Student)
                 .Where(x => x.StudentId == studentId)
-                .Select(x => new StudentBorrowReportDto
+                .Select(x => new BookResponseDto
                 {
-                    StudentId = x.StudentId,
-                    StudentName = x.Student.FullName,
-                    BookTitle = x.Book.Title,
-                    BorrowDate = x.BorrowDate
+                    
+                    Id = x.Id,
+                    Title = x.Book.Title,
+                    Author = x.Book.Author,
+                    ISBN = x.Book.ISBN,
+                    LibraryId = x.Book.LibraryId
                 })
                 .ToListAsync();
 
             return Ok(result);
         }
 
-        // GET api/reports/library-books/1
         [HttpGet("library-books/{libraryId}")]
         public async Task<ActionResult<IEnumerable<LibraryBookCountReportDto>>> GetBooksByLibrary(int libraryId)
         {
@@ -54,7 +55,6 @@ namespace KutuphaneApi.Controllers
             return Ok(result);
         }
 
-        // GET api/reports/who-has-books
         [HttpGet("who-has-books")]
         public async Task<ActionResult<IEnumerable<StudentBorrowReportDto>>> WhoHasBooks()
         {
